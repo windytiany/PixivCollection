@@ -8,6 +8,7 @@ export const useStore = defineStore('main', {
   state: () => ({
     showSidebar: false,
     showNav: true,
+    showConfigDialog: false,
 
     loading: true,
     max_bookmark_id: 0,

@@ -20,6 +20,7 @@
         无数据
       </Tip>
       <ImageViewer />
+      <ConfigDialog />
       <DebugInfo v-if="debug.enable" />
     </div>
   </div>
@@ -28,8 +29,8 @@
 <script setup lang="ts">
 import { SettingType } from '@orilight/vue-settings'
 import { useStore } from '@/store'
-import { formatBytes } from '@/utils'
-import { DATA_FILE, ONLINE_MODE } from '@/config'
+import { formatBytes, syncSettings } from '@/utils'
+import { ONLINE_MODE, SERVER_ADDRESS } from '@/config'
 
 const store = useStore()
 
@@ -58,32 +59,13 @@ function regSettings() {
 
 async function fetchData() {
   try {
-    const response = await fetch(DATA_FILE)
-    const reader = (response.body as ReadableStream<Uint8Array>).getReader()
-    contentLength.value = +(response.headers.get('Content-Length') || 0)
-    const chunks = []
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done)
-        break
-      chunks.push(value)
-      receivedLength.value += value.length
-    }
-
-    const chunksAll = new Uint8Array(receivedLength.value)
-    let position = 0
-    for (const chunk of chunks) {
-      chunksAll.set(chunk, position)
-      position += chunk.length
-    }
-
-    const result = new TextDecoder('utf-8').decode(chunksAll)
-
-    store.images = JSON.parse(result)
+    const data = await fetch(`${SERVER_ADDRESS}/metadata`)
+    const images = await data.json()
+    store.images = images
     store.sortImages()
   }
-  catch (e) {
-    console.error(e)
+  catch (error) {
+    console.error('Error parsing response:', error)
   }
   finally {
     loading.value = false
@@ -96,7 +78,8 @@ onMounted(() => {
     store.fetchFromAPI()
   }
   else {
-    fetchData()
+    syncSettings()
+      .then(_ => fetchData())
   }
 })
 

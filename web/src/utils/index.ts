@@ -1,5 +1,9 @@
-import { IMAGE_FILENAME, IMAGE_FORMAT_PREVIEW, IMAGE_FORMAT_THUMBNAIL, IMAGE_PATH_ORIGINAL, IMAGE_PATH_PREVIEW, IMAGE_PATH_THUMBNAIL, LINK_PIXIV_ARTWORK, LINK_PIXIV_USER, ONLINE_MODE, ONLINE_PXIMG } from '@/config'
+import { IMAGE_FILENAME, IMAGE_FORMAT_PREVIEW, IMAGE_FORMAT_THUMBNAIL, LINK_PIXIV_ARTWORK, LINK_PIXIV_USER, ONLINE_MODE, ONLINE_PXIMG, SERVER_ADDRESS } from '@/config'
 import { ImageType } from '@/types'
+
+const imagesConfig = localStorage.getItem('imagesConfig')
+const imagesPath = imagesConfig ? JSON.parse(imagesConfig).imagesPath : './image'
+const jsonPath = imagesConfig ? JSON.parse(imagesConfig).jsonPath : './images.json'
 
 export function formatBytes(bytes: number) {
   if (bytes === 0)
@@ -24,6 +28,26 @@ export function formatTime(time: string) {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`
 }
 
+export async function syncSettings() {
+  const settings = {
+    images_folder_path: imagesPath,
+    json_path: jsonPath,
+  }
+
+  try {
+    await fetch(`${SERVER_ADDRESS}/update/settings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(settings),
+    })
+  }
+  catch (error) {
+    console.error('Error updating settings:', error)
+  }
+}
+
 export function getImageUrl(image: Image, imageType: ImageType) {
   if (ONLINE_MODE && image.link) {
     switch (imageType) {
@@ -35,31 +59,33 @@ export function getImageUrl(image: Image, imageType: ImageType) {
         return image.link.thumbnail.replace('i.pximg.net', ONLINE_PXIMG)
     }
   }
-  const filename = IMAGE_FILENAME
-    .replace('{id}', image.id.toString())
-    .replace('{part}', image.part.toString())
   let imagePath = ''
   let imageExt = ''
   switch (imageType) {
     case ImageType.Original:
-      imagePath = IMAGE_PATH_ORIGINAL
+      imagePath = 'original/'
       imageExt = image.ext
       break
     case ImageType.Preview:
-      imagePath = IMAGE_PATH_PREVIEW
+      imagePath = 'preview/'
       imageExt = IMAGE_FORMAT_PREVIEW
       break
     case ImageType.Thumbnail:
-      imagePath = IMAGE_PATH_THUMBNAIL
+      imagePath = 'thumbnail/'
       imageExt = IMAGE_FORMAT_THUMBNAIL
       break
   }
-  if (!imagePath.endsWith('/'))
-    imagePath += '/'
-  if (imageExt === '<ext>')
-    imageExt = image.ext
-
-  return imagePath + filename.replace('{ext}', imageExt)
+  const filename = IMAGE_FILENAME
+    .replace('{id}', image.id.toString())
+    .replace('{part}', image.part.toString())
+    .replace('{ext}', imageExt)
+  // if (!imagePath.endsWith('/'))
+  //   imagePath += '/'
+  // if (imageExt === '<ext>')
+  //   imageExt = image.ext
+  //
+  // return imagePath + filename.replace('{ext}', imageExt)
+  return `${SERVER_ADDRESS}/image/${imagePath}${filename}`
 }
 
 export function openPixivIllust(pid: number) {

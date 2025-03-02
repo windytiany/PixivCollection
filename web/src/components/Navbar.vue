@@ -50,11 +50,23 @@
         <span class="text-[#0398fa]">Pixiv</span>Collection
       </div>
       <div class="absolute right-0 top-0 hidden lg:flex">
-        <button
+        <!-- <button
           class="size-[60px] hover:bg-gray-400/20"
           @click="openGithub"
         >
           <IconGithub class="mx-auto size-6" />
+        </button> -->
+        <button
+          class="size-[60px] hover:bg-gray-400/20"
+          @click="refreshPage"
+        >
+          <IconRefresh class="mx-auto size-6" />
+        </button>
+        <button
+          class="size-[60px] hover:bg-gray-400/20"
+          @click="showConfigDialog = true"
+        >
+          <IconConfig class="mx-auto size-6" />
         </button>
         <button
           class="size-[60px] hover:bg-gray-400/20"
@@ -86,6 +98,7 @@ const {
   preferColorScheme,
   showSidebar,
   showNav,
+  showConfigDialog,
   imageViewer,
   isFullscreen,
   filterConfig,
@@ -112,8 +125,12 @@ function navToTop() {
   document.documentElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-function openGithub() {
-  window.open(LINK_GITHUB, '_blank')
+// function openGithub() {
+//   window.open(LINK_GITHUB, '_blank')
+// }
+
+function refreshPage() {
+  window.location.reload()
 }
 
 function handleSearchInput(e: Event) {

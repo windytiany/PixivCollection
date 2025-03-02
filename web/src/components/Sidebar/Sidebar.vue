@@ -4,7 +4,7 @@
       v-show="showSidebar"
       class="fixed left-0 top-[60px] z-30 h-[calc(100vh-60px)] w-full overflow-y-auto overflow-x-hidden bg-white px-2 py-3 transition-all duration-500 dark:bg-[#242424] sm:top-0 sm:h-screen sm:w-[400px] lg:block"
     >
-      <div class="mx-10 mb-2 flex justify-between lg:hidden">
+      <!-- <div class="mx-10 mb-2 flex justify-between lg:hidden">
         <button
           class="size-[60px]"
           @click="openGithub"
@@ -26,7 +26,7 @@
           <IconShrink v-if="isFullscreen" class="mx-auto size-5" />
           <IconExpand v-else class="mx-auto size-5" />
         </button>
-      </div>
+      </div> -->
       <SidebarHead>浏览设置</SidebarHead>
       <SidebarBlock>
         <div>
@@ -365,27 +365,10 @@
       <SidebarBlock>
         <div class="text-xs">
           <div class="font-bold">
-            构建信息
+            项目地址
           </div>
           <div>
-            运行模式: {{ MODE }}
-          </div>
-          <div>
-            在线模式: {{ ONLINE_MODE }}
-            <template v-if="ONLINE_MODE">
-              <br>
-              用户ID: {{ ONLINE_USER_ID }}
-            </template>
-          </div>
-          <div>
-            构建日期：{{ formatTime(BUILD_DATE) }}
-          </div>
-          <div>
-            Vercel: {{ VERCEL_ENV }}
-            <template v-if="VERCEL_ENV">
-              <br>
-              commit: {{ VERCEL_GIT_COMMIT_SHA.slice(0, 7) }}
-            </template>
+            <a href="https://github.com/windytiany/PixivCollection">https://github.com/windytiany/PixivCollection</a>
           </div>
         </div>
       </SidebarBlock>
@@ -413,12 +396,10 @@ import { exportFile, formatTime } from '@/utils'
 
 const store = useStore()
 const {
-  preferColorScheme,
   showSidebar,
   images,
   filterConfig,
   masonryConfig,
-  isFullscreen,
   debug,
 } = toRefs(store)
 
@@ -589,10 +570,6 @@ function handleChangeR18(event: Event) {
   const target = event.target as HTMLSelectElement
   if (target.value === 'show' || target.value === 'only')
     filterConfig.value.restrict.maxSanityLevel = 6
-}
-
-function openGithub() {
-  window.open(LINK_GITHUB, '_blank')
 }
 
 function loadDataFromFile() {

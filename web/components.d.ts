@@ -8,9 +8,11 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     CButton: typeof import('./src/components/common/CButton.vue')['default']
+    ConfigDialog: typeof import('./src/components/ConfigDialog.vue')['default']
     DebugInfo: typeof import('./src/components/DebugInfo.vue')['default']
     IconAuto: typeof import('./src/components/Icon/IconAuto.vue')['default']
     IconClose: typeof import('./src/components/Icon/IconClose.vue')['default']
+    IconConfig: typeof import('./src/components/Icon/IconConfig.vue')['default']
     IconDownload: typeof import('./src/components/Icon/IconDownload.vue')['default']
     IconExpand: typeof import('./src/components/Icon/IconExpand.vue')['default']
     IconFunnelSolid: typeof import('./src/components/Icon/IconFunnelSolid.vue')['default']
@@ -21,6 +23,7 @@ declare module 'vue' {
     IconMenu: typeof import('./src/components/Icon/IconMenu.vue')['default']
     IconMoon: typeof import('./src/components/Icon/IconMoon.vue')['default']
     IconOpen: typeof import('./src/components/Icon/IconOpen.vue')['default']
+    IconRefresh: typeof import('./src/components/Icon/IconRefresh.vue')['default']
     IconRight: typeof import('./src/components/Icon/IconRight.vue')['default']
     IconSearch: typeof import('./src/components/Icon/IconSearch.vue')['default']
     IconShrink: typeof import('./src/components/Icon/IconShrink.vue')['default']

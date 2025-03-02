@@ -1,13 +1,18 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, globalShortcut } = require('electron')
+const { exec } = require("child_process")
 
 const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  const mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
     autoHideMenuBar: true
   })
 
-  win.loadFile('web/dist/index.html')
+	globalShortcut.register('f5', function() {
+		mainWindow.reload()
+	})
+  exec("./server/.venv/Scripts/activate && fastapi run server/main.py --port 14375")
+  mainWindow.loadFile('web/dist/index.html')
 }
 
 app.whenReady().then(() => {
