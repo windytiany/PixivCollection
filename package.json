@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder build"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +21,8 @@
     "productName": "PixivCollection",
     "directories": {
       "output": "dist"
-    }
+    },
+    "icon": "docs/app-icon.png"
   }
 
 }
