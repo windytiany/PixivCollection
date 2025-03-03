@@ -4,13 +4,11 @@
 
 ## 简介
 
-[示例站点](https://pixiv.orilight.top/)
+[原作者示例站点](https://pixiv.orilight.top/)
 
-将个人的P站收藏夹数据爬取到本地并部署为在线网站
+浏览个人收藏的P站图片。
 
-无后端设计，图片数据一次性全部加载，图片较多时可能需要较长的时间
-
-（测试）支持基于 [HibiAPI](https://github.com/mixmoe/HibiAPI) 的在线模式 [Demo](https://pixiv-collection-online.vercel.app/)
+图片数据一次性全部加载，图片较多时可能需要较长的时间。
 
 ## 功能
 
@@ -23,10 +21,14 @@
   - 通过图片id、图片标题、作者id、作者昵称、标签、标签翻译搜索图片
 - 夜间模式
 - 全屏模式
-- 在线模式（测试）
-  - 使用 [HibiAPI](https://github.com/mixmoe/HibiAPI) 获取数据，需要配置 `VITE_ONLINE` 开头的相关环境变量
 
-## 部署
+## 使用
+初次使用请点击右上方的“设置”按钮，设置`Images path`和`Json path`
+`Images path`是存放图片的文件夹的路径
+`Json path`是保存图片元数据的json文件的路径
+关于图片文件夹与json文件结构，请参考原项目
+
+## 从源码构建
 
 1.构建前端
 
@@ -34,6 +36,8 @@
 > 构建前端需要安装 NodeJS 环境及 PNPM 包管理器
 
 ```bash
+cd web
+
 # 安装依赖
 pnpm i
 
@@ -41,37 +45,32 @@ pnpm i
 pnpm build
 ```
 
-构建后的前端文件位于 `dist` 目录下，将其上传至服务器即可
+构建后的前端文件位于 `web/dist` 目录下
 
-2.爬取数据
+2.构建后端
 
-[数据爬取脚本及使用](https://github.com/orilights/python_scripts/tree/main/pixiv_collection)
+> [!NOTE]
+> 需要Python环境，本地版本为3.10.16
 
-使用上述脚本将收藏夹图片和图片信息爬取到本地
+```bash
+cd server
 
-3.上传数据
+# 创建虚拟环境
+python -m venv .venv
 
-将脚本生成的 `images.json` 上传至服务器 `./` 目录
+# 激活虚拟环境
+.venv/Scripts/activate
 
-(可选) 将爬取到的原图上传至服务器 `./image/original` 目录
+# 安装依赖
+pip install fastapi[standard]
+```
 
-将脚本生成的预览图上传至服务器 `./image/preview` 目录
+3.打包
 
-将脚本生成的缩略图上传至服务器 `./image/thumbnail` 目录
+```bash
+# 安装依赖
+pnpm i
 
-## 可用环境变量
-
-- `VITE_DATA_FILE`: 数据文件路径，默认为 `images.json`
-- `VITE_IMAGE_PATH_ORIGINAL`: 图片原图路径，默认为 `./image/original`
-- `VITE_IMAGE_PATH_PREVIEW`: 图片预览图路径，默认为 `./image/preview`
-- `VITE_IMAGE_PATH_THUMBNAIL`: 图片缩略图路径，默认为 `./image/thumbnail`
-- `VITE_IMAGE_FILENAME`: 图片名称格式，默认为 `{id}_p{part}.{ext}`
-- `VITE_IMAGE_FORMAT_PREVIEW`: 图片预览图格式，默认为 `webp`，设置为 `<ext>` 时为与原图相同格式
-- `VITE_IMAGE_FORMAT_THUMBNAIL`: 图片缩略图格式，默认为 `webp`，设置为 `<ext>` 时为与原图相同格式
-- `VITE_IMAGE_ALLOW_DOWNLOAD_ORIGINAL`: 是否允许下载原图，默认为 `true`
-- `VITE_MASONRY_LOAD_DELAY`: 瀑布流图片加载延迟，单位毫秒，默认为 `300`
-- `VITE_ONLINE_MODE`: 开启在线模式，默认为 `false`
-- `VITE_ONLINE_API`: HibiAPI Pixiv 收藏夹接口，默认为空
-- `VITE_ONLINE_USER_ID`: Pixiv 用户 ID，默认为空
-- `VITE_ONLINE_PXIMG`: Pixiv 图片代理，默认为 `pximg.orilight.top`
-- `INJECT_HEAD`: Head 标签末尾插入内容，默认为空，可用于插入统计代码
+# 打包
+pnpm dist
+```
